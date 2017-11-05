@@ -1,9 +1,35 @@
 #!/usr/bin/env python3
-
+################################################################################
+# File: AssayLib/PlateGUICellPlate.py
+#   Author: Guangyu Li, Northeastern University, C&E Engineering
+#   E-mail: li.gua@husky.neu.edu
+################################################################################
+# SYNOPSIS
+#   Class for handling and displaying cell grid GUI, defines two classes:
+#     CellPlate: static displaying cell plate grid
+#     InteractiveCellPlate: a derived CellPlate class which allows interaction
+#
+# DEFINES
+#   CellPlate
+#     methods:
+#       get_row_col_capacity
+#       clear_all_cells
+#       set_cell_content
+#       update_cells
+#
+#   InteractiveCellPlate
+#     methods:
+#       get_row_col_capacity
+#       clear_all_cells
+#       set_cell_content
+#       update_cells
+#       onCellClick
+#
+# *other classes defined in this module is only internally called, and are not
+#  designed for exporting
+################################################################################
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
-
-
 ################################################################################
 # Cell and InteractiveCell classes
 # InteractiveCell is used by InteractiveCellPlate to react to the mouse click

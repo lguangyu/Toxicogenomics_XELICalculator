@@ -7,7 +7,7 @@ from AssayLib.Exceptions import AsRuntimeError
 from AssayLib.Layout import Layout
 from AssayLib.DataParser import DataParser
 from AssayLib.Log import Log
-from AssayLib.ArrayFormatting import array2d2string
+from AssayLib.UtilFunctions import array2d2string
 
 
 ################################################################################
@@ -39,7 +39,8 @@ class AssayPlate(object):
 	def create_output_dir(self, outdir, overwrite = False, **kw):
 		if os.path.exists(outdir):
 			if not overwrite:
-				raise AsRuntimeError("output dir '%s' already exists" % outdir)
+				raise AsRuntimeError("""output dir '%s' already exists
+I don't like overwrite""" % outdir)
 		else:
 			os.makedirs(outdir)
 

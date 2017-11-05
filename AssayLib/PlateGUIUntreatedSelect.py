@@ -1,9 +1,19 @@
 #!/usr/bin/env python3
-
+################################################################################
+# File: AssayLib/PlateGUIUntreatedSelect.py
+#   Author: Guangyu Li, Northeastern University, C&E Engineering
+#   E-mail: li.gua@husky.neu.edu
+################################################################################
+# SYNOPSIS
+#   GUI for choose one signed sample to be the untreated (control) sample for
+#   calculation.
+#
+# DEFINES
+#   PlateGUIUntreatedSelect
+#     methods: (all methods are GUI-related)
+################################################################################
 from PyQt5 import QtWidgets
 from AssayLib.PlateGUIModulePrototype import PlateGUIModulePrototype
-
-
 ################################################################################
 class PlateGUIUntreatedSelect(PlateGUIModulePrototype):
 	def __init__(self, parent):
@@ -27,20 +37,24 @@ class PlateGUIUntreatedSelect(PlateGUIModulePrototype):
 	############################################################################
 	# add items into the combobox
 	# existing ones will be all cleared
-	def combo_box_add_items(self):
+	def _combo_box_add_items(self):
 		self.combo_box.clear()
 		samples_list = self.parentWidget().get_sample_mapping()
 		for i, s in enumerate(samples_list):
 			self.combo_box.addItem("Sample %d" % (i + 1))
 
+
 @PlateGUIUntreatedSelect.onEnable
-def onEnable(self):
-	self.parentWidget().setFixedSize(670, 719)
-	self.combo_box_add_items()
+def onEnable(self, reset = False):
+	if reset:
+		self._combo_box_add_items()
 
 @PlateGUIUntreatedSelect.checkOnFinishClick
 def onFinish(self):
 	self.parentWidget().set_untreated_sample(self.combo_box.currentIndex())
+
+
+
 
 
 ################################################################################

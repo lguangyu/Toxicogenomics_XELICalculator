@@ -1,11 +1,41 @@
 #!/usr/bin/env python3
-
-import types
+################################################################################
+# File: AssayLib/PlateGUIPlateViewer.py
+#   Author: Guangyu Li, Northeastern University, C&E Engineering
+#   E-mail: li.gua@husky.neu.edu
+################################################################################
+# SYNOPSIS
+#   Class for handling and displaying cell grid GUI, slaves a CellPlate object,
+#   with row and column labels. Several functions are just a forwarding call to
+#   the underneath CellPlate object. Defines two classes:
+#     PlateGUIPlateViewer: static displaying cell plate grid
+#     PlateGUIPlateViewerInteractive: a derived class which allows interaction
+#
+# DEFINES
+#   PlateGUIPlateViewer
+#     methods:
+#       get_row_col_capacity
+#       set_row_labels
+#       set_col_labels
+#       clear_all_cells
+#       set_cell_content
+#       adjust_size_to_child_plate
+#       update_appearance
+#
+#   InteractiveCellPlate
+#     methods:
+#       get_row_col_capacity
+#       set_row_labels
+#       set_col_labels
+#       clear_all_cells
+#       set_cell_content
+#       adjust_size_to_child_plate
+#       update_appearance
+#       onCellClick
+################################################################################
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
 from AssayLib.PlateGUICellPlate import CellPlate, InteractiveCellPlate
-
-
 ################################################################################
 # PlateGUIPlateViewer object manages a cell lattice plate, and two label series
 # (row and column)

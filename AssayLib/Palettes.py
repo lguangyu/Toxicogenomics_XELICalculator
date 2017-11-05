@@ -1,31 +1,51 @@
 #!/usr/bin/env python3
 ################################################################################
-# this module stores the color palettes used in rendering categories
+# File: AssayLib/Palettes.py
+#   Author: Guangyu Li, Northeastern University, C&E Engineering
+#   E-mail: li.gua@husky.neu.edu
 ################################################################################
-
-
+# SYNOPSIS
+#   Color palettes used in visulizing cell plate grid, and the Classes to build
+#   these palettes
+#
+# DEFINES
+#   DictPalette
+#     methods:
+#       set
+#       get
+#       __getitem__
+#
+#   ListPalette
+#     methods:
+#       set
+#       get
+#       __getitem__
+#
+#   CategoriesPalette: DictPalette instance
+#   SampleSeriesPalette: ListPalette instance
 ################################################################################
 class DictPalette(object):
-	def __init__(self, pallete = None, no_case = True):
+	def __init__(self, palette = None, no_case = True):
 		super(DictPalette, self).__init__()
-		self.pallete = {}
+		self.palette = {}
 		self.no_case = no_case
-		self.set_pallete_dict(pallete)
+		self.set(palette)
 
-	def set_pallete_dict(self, pallete = None):
-		if pallete:
+	def set(self, palette = None):
+		if palette:
 			if self.no_case:
-				self.pallete = dict((k.lower(), v) for k, v in pallete.items())
+				# copy the original data
+				self.palette = dict((k.lower(), v) for k, v in palette.items())
 			else:
-				self.pallete = pallete
+				self.palette = palette
 		return self
 
 	def get(self, key):
 		try:
 			if self.no_case:
-				return self.pallete[key.lower()]
+				return self.palette[key.lower()]
 			else:
-				return self.pallete[key]
+				return self.palette[key]
 		except:
 			# if key miss, return default value (black)
 			return "#000000"
@@ -36,19 +56,20 @@ class DictPalette(object):
 
 ################################################################################
 class ListPalette(object):
-	def __init__(self, pallete = None):
+	def __init__(self, palette = None):
 		super(ListPalette, self).__init__()
-		self.pallete = []
-		self.set_pallete_list(pallete)
+		self.palette = []
+		self.set(palette)
 
-	def set_pallete_list(self, pallete = None):
-		if pallete:
-			self.pallete = pallete
+	def set(self, palette = None):
+		if palette:
+			# copy the original data
+			self.palette = list(palette)
 		return self
 
 	def get(self, index):
 		try:
-			return self.pallete[index]
+			return self.palette[index]
 		except:
 			# if index out-of-bound, return default value (black)
 			return "#000000"

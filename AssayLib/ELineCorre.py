@@ -5,7 +5,7 @@ from scipy import stats
 from matplotlib import pyplot
 from AssayLib.Exceptions import AsRuntimeError
 from AssayLib.ELineCorreGUI import ELineCorreGUI
-from AssayLib.ArrayFormatting import array2d2string_by_row, vector2string
+from AssayLib.UtilFunctions import array2d2string_by_row, vector2string
 
 
 class NoValueSelectedError(RuntimeError):

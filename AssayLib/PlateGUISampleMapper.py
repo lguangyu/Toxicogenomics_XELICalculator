@@ -1,5 +1,34 @@
 #!/usr/bin/env python3
-
+################################################################################
+# File: AssayLib/PlateGUISampleMapper.py
+#   Author: Guangyu Li, Northeastern University, C&E Engineering
+#   E-mail: li.gua@husky.neu.edu
+################################################################################
+# SYNOPSIS
+#   Allows the user to interactively map samples onto the plate. Must be called
+#   after basic config is finished.
+#   PlateGUISampleMapper is the class that actually handles the mouse click
+#   event happened to the cells. The event is forwarded through parent classes
+#   back here.
+#   Defines two classes:
+#     LayoutViewDialog: a dialog window previewing the current layout
+#     PlateGUISampleMapper: the exported GUI module
+#
+# DEFINES
+#   LayoutViewDialog
+#     methods:
+#       format_layout_contents
+#       adjust_size_to_child_plate
+#       launch
+#
+#   InteractiveCellPlate
+#     methods:
+#       show_layout_viewer
+#       update_cell_plate
+#       reset_mapper
+#       add_selection
+#       onCellClick
+################################################################################
 import numpy
 from PyQt5 import QtWidgets
 from PyQt5 import QtCore
@@ -7,8 +36,6 @@ from AssayLib.PlateGUIModulePrototype import PlateGUIModulePrototype
 from AssayLib.PlateGUIPlateViewer import PlateGUIPlateViewer, PlateGUIPlateViewerInteractive
 from AssayLib.Palettes import CategoriesPalette, SampleSeriesPalette
 from AssayLib.UtilFunctions import plate_type_to_shape
-
-
 ################################################################################
 # popup window shows the content of current layout
 class LayoutViewDialog(QtWidgets.QDialog):
@@ -90,6 +117,8 @@ class PlateGUISampleMapper(PlateGUIModulePrototype):
 		fmt = "<font color='%s'>%d</font>"
 		return (position, fmt % (SampleSeriesPalette[index], index + 1))
 
+	############################################################################
+	# only update the appearance of currently mapped cells by any samples
 	def _format_current_mapped_cells(self):
 		layout = self.parentWidget().get_basic_config("layout")
 		contents = []
@@ -143,6 +172,12 @@ class PlateGUISampleMapper(PlateGUIModulePrototype):
 			self._mark_cell_taken(r, c)
 		return False
 
+	############################################################################
+	# returns True if it is possible (enough space) to map new sample at coords
+	# two possible reasons to fail:
+	#   out of plate boundary
+	#   some cells are not available (taken by another sample, since we only
+	#   allow each cell cannot serve two samples)
 	def _is_new_selection_placable(self, anchor, layout):
 		ach_r, ach_c = anchor
 		lay_r, lay_c = layout.extension_size()
@@ -160,6 +195,8 @@ at position (%d,%d)""" % (lay_r, lay_c, max_r, max_c, ach_r, ach_c), "Error")
 		# if succeed, return True
 		return True
 
+	############################################################################
+	# add new sample mapping to the collection list
 	def add_selection(self, cell_coords):
 		layout = self.parentWidget().get_basic_config("layout")
 		if self._is_new_selection_placable(cell_coords, layout):
@@ -170,14 +207,17 @@ at position (%d,%d)""" % (lay_r, lay_c, max_r, max_c, ach_r, ach_c), "Error")
 	# the event handler for deeply thrown back click events
 	def onCellClick(self, caller_cell, cell_coords):
 		if caller_cell.__class__.__name__ != "InteractiveCell":
-			raise TypeError("only InteractiveCell class is allowed to react to interactions")
+			raise TypeError("""I don't know what you have done to make something
+respond to the mouse click and triggered this
+handler, but only InteractiveCell class is allowed
+to react to interactions""")
 		self.add_selection(cell_coords)
 
 
 @PlateGUISampleMapper.onEnable
-def OnEnable(self):
-	self.parentWidget().setFixedSize(670, 680)
-	self.reset_mapper()
+def OnEnable(self, reset = False):
+	if reset:
+		self.reset_mapper()
 
 @PlateGUISampleMapper.checkOnNextClick
 def checkOnNextClick(self):

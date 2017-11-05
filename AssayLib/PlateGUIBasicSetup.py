@@ -1,13 +1,28 @@
 #!/usr/bin/env python3
-
+################################################################################
+# File: AssayLib/PlateGUIBasicSetup.py
+#   Author: Guangyu Li, Northeastern University, C&E Engineering
+#   E-mail: li.gua@husky.neu.edu
+################################################################################
+# SYNOPSIS
+#   Designed as the first module on plate configuring GUI.
+#   Interface of setting data file, layout file, output directory, assay name,
+#   plate type, and sample type (E-Coli, yeast, etc.).
+#   This MUST be done before the sample mapper module is called since that one
+#   needs some information to initialize.
+#
+# DEFINES
+#   PlateGUIBasicSetup
+#     methods: (all methods are GUI-related)
+################################################################################
 import os
 import re
 from PyQt5 import QtWidgets
 from AssayLib.PlateGUIModulePrototype import PlateGUIModulePrototype
 from AssayLib.Layout import Layout
-
-
 ################################################################################
+# module for basic settings and file selection
+# the first module to be called
 class PlateGUIBasicSetup(PlateGUIModulePrototype):
 	def __init__(self, parent):
 		super(PlateGUIBasicSetup, self).__init__(parent, _mid = 0,
@@ -62,6 +77,12 @@ class PlateGUIBasicSetup(PlateGUIModulePrototype):
 		self.type_btns.addButton(self.type96, id = 96)
 		self.type_btns.addButton(self.type384, id = 384)
 
+		self.sample_type_combo = QtWidgets.QComboBox(parent = self)
+		self.sample_type_combo.setGeometry(210, 132, 140, 24)
+		self.sample_type_combo.setEditable(False)
+
+	############################################################################
+	# dynamic caller to open the file selector dialog (callbacks is passed)
 	def run_select_file(self, accept_mode, file_mode, callbacks, option = 0,
 							option_on = False):
 		self.file_selector.setAcceptMode(accept_mode)
@@ -83,6 +104,7 @@ class PlateGUIBasicSetup(PlateGUIModulePrototype):
 
 	############################################################################
 	# set the default name of the assay sample
+	# guess the assay name from the selected data file if the field is empty
 	def _set_default_assay_name(self):
 		if not self.aname_edit.text():
 			bn = os.path.basename(self.dataf_edit.text())
@@ -95,15 +117,23 @@ class PlateGUIBasicSetup(PlateGUIModulePrototype):
 
 
 @PlateGUIBasicSetup.onEnable
-def onEnable(self):
-	self.parentWidget().setFixedSize(670, 183)
+def onEnable(self, reset = False):
+	if reset:
+		self.sample_type_combo.clear()
+		sample_dict = self.parentWidget().sample_types()
+		for i in sorted(sample_dict.keys()):
+			self.sample_type_combo.addItem(i)
 
 @PlateGUIBasicSetup.checkOnNextClick
 def checkOnNextClick(self):
+	# validating all settings
+	# data_file will not be checked at this time
 	data_file = self.dataf_edit.text()
 	layout_file = self.layoutf_edit.text()
 	out_dir = self.outdir_edit.text()
 	assay_name = self.aname_edit.text()
+	plate_type = self.type_btns.checkedId()
+	sample_type = self.sample_type_combo.currentText()
 
 	# datafile is set and file exists
 	if not data_file:
@@ -136,13 +166,13 @@ Make sure file exists and is in valid layout format""", "Error")
 		assay_name = self.aname_edit.text()
 		self.parentWidget().fire_msg("Assay name set to '%s' by default" % assay_name)
 
-
 	self.parentWidget().set_basic_config(data_file = data_file,
 										layout_file = layout_file,
 										layout = layout,
 										out_dir = out_dir,
 										assay_name = assay_name,
-										plate_type = self.type_btns.checkedId())
+										plate_type = plate_type,
+										sample_type = sample_type)
 	return 0
 
 

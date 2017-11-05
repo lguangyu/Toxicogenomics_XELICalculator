@@ -4,7 +4,7 @@ import numpy
 from AssayLib.Exceptions import AsRuntimeError
 from AssayLib.SamplePrototype import SamplePrototype
 from AssayLib.ELineCorre import ELineCorre
-from AssayLib.ArrayFormatting import array2d2string
+from AssayLib.UtilFunctions import array2d2string
 
 
 ################################################################################

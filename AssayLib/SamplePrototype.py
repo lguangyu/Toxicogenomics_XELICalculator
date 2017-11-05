@@ -3,7 +3,7 @@
 import numpy
 from AssayLib.Exceptions import PrerequestError
 from AssayLib.Layout import Layout
-from AssayLib.ArrayFormatting import vector2string, array2d2string
+from AssayLib.UtilFunctions import vector2string, array2d2string
 
 
 ################################################################################
